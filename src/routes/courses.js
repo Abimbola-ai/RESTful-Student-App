@@ -48,6 +48,15 @@ router.put('/modifyCourse/:code', async (req, res) => {
   });
   
 
+// Route to get all courses
+router.get('/getCourses', async (req, res) => {
+  try {
+    const courses = await Course.find();
+    res.json(courses);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
 
 module.exports = router;

@@ -17,6 +17,43 @@ router.post("/addStudent", async (req,res)=> {
     }
 });
 
+// Route to get a single student by ID for modification
+// router.get('/getStudent/:id', async (req, res) => {
+//   try {
+//     const student = await Student.findOne({ id: req.params.id });
+//     if (!student) {
+//       return res.status(404).json({ error: 'Student not found' });
+//     }
+//     res.json(student);
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// });
+router.get('/getStudent/:id', async (req, res) => {
+  try {
+    const student = await Student.findOne({ id: req.params.id });
+    if (!student) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+
+    // Simplify the course information to an array of course names
+    const courses = await Course.find({ _id: { $in: student.courses } });
+    const simplifiedCourses = courses.map(course => course.name);
+
+    // Send the modified response
+    res.json({
+      _id: student._id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      id: student.id,
+      semester: student.semester,
+      courses: simplifiedCourses,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 //Route to delete a student by the id
 router.delete('/removeStudent/:id', async (req, res) => {
     try {

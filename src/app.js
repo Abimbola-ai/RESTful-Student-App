@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const path = require("path");
 const app = express();
 const studentRoutes = require("./routes/students");
 const courseRoutes = require("./routes/courses");
@@ -18,6 +19,9 @@ mongoose.connection.once('open', function () {
 
 // Middleware to parse JSON requests (place this before defining routes)
 app.use(express.json());
+
+// Serve static files from the "client" directory
+app.use(express.static('client/public'));
 
 // See incoming request
 app.use((req, res, next) => {
@@ -40,4 +44,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal Server Error' });
 });
 
-app.listen(port, () => console.log(`Server is running on http://localhost:${port}`));
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+  console.log(`Client-side is available at http://localhost:${port}/index.html`);
+});
